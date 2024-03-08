@@ -19,6 +19,8 @@
 #   기존의 산타는 1칸 해당방향으로 밀려남. 그 옆에 산타가 있다면 연쇄적으로 1칸. 게임판밖이면 탈락
 #게임종료: M번의 턴, P산타 모두 탈락하면 그 즉시 종류
 #   매 턴 이후 아직 탈락안한산타는 +1
+import sys
+
 def print_array(title, arr):
     depth = len(arr)
     width = len(arr[0])
@@ -105,7 +107,6 @@ def solve():
         santa_info[idx][1] = m-1      
     
     def crash(idx, crash_idx, dir, turn):
-        print(idx, crash_idx, dir, turn)
         #인자: idx가 이동해 crash_idx에 부딫침, 현재 턴, 방향
         #해야할일: 위치 이동, 기절, 게임아웃, 점수
         #세가지 경우: 루돌프가 움직여 산타가 부딫침 / 산타가 움직여 루돌프가 부딫침 / 산타가 튕겨져 산타와 부딫침
@@ -117,7 +118,9 @@ def solve():
             
             #게임판 나가면 아웃
             if new_pos[0] < 0 or new_pos[0] >= n or new_pos[1] < 0 or new_pos[1] >= n:
+                santa_pos[crash_idx][0], santa_pos[crash_idx][1] = new_pos[0], new_pos[1]
                 santa_info[crash_idx][1] = -1
+                return 0
             
             #새 위치에 산타나 루돌프가 있으면 crash
             if (new_pos in santa_pos):
@@ -139,12 +142,14 @@ def solve():
             
             #게임판 나가면 아웃
             if new_pos[0] < 0 or new_pos[0] >= n or new_pos[1] < 0 or new_pos[1] >= n:
+                santa_pos[idx][0], santa_pos[idx][1] = new_pos[0], new_pos[1]
                 santa_info[idx][1] = -1
+                return 0
             
             #이동했는데 다른 산타있음
             if (new_pos in santa_pos):
                 new_crash_idx = santa_pos.index(new_pos)
-                santa_pos[crash_idx][0], santa_pos[crash_idx][1] = new_pos[0], new_pos[1]
+                santa_pos[idx][0], santa_pos[idx][1] = new_pos[0], new_pos[1]
                 crash(idx, new_crash_idx, (-dir[0], -dir[1]), turn)
             
             else:
@@ -157,7 +162,9 @@ def solve():
             
             #게임판 나가면 아웃
             if new_pos[0] < 0 or new_pos[0] >= n or new_pos[1] < 0 or new_pos[1] >= n:
+                santa_pos[crash_idx][0], santa_pos[crash_idx][1] = new_pos[0], new_pos[1]
                 santa_info[crash_idx][1] = -1
+                return 0
             
             
             #이동했는데 다른 산타있음
@@ -178,7 +185,6 @@ def solve():
      
     #게임하기 
     while m:
-        #print(m, '$$$$$$$$$$$$$$$$')
         game_over = move_ru()
         if game_over:
             break
@@ -187,29 +193,25 @@ def solve():
             #움직일수잇는 산타 체크
             if santa_info[i][1] == m:
                 move_santa(i, m)
-            #print_array("info", santa_info)
-            #print_array("pos", santa_pos)
-            
-                
+            # for x in range(n):
+            #     for y in range(n):
+            #         a = "0"
+            #         if [x, y] in santa_pos:
+            #             a = santa_pos.index([x, y]) + 1
+            #         if [x, y] == ru_pos:
+            #             a = "-1"
+            #         print(a, end=" ")
+            #     print()
+            # print("=============")
         m -=1     
            
         #살아남은산타에게 1
         for i in range(p):
             if santa_info[i][1] != -1:
                 santa_info[i][0] += 1
+
                 
-        for i in range(n):
-            for j in range(n):
-                a = "0"
-                if [i, j] in santa_pos:
-                    a = santa_pos.index([i, j]) + 1
-                if [i, j] == ru_pos:
-                    a = "-1"
-                print(a, end=" ")
-            print()
-                
-        print([elm[0] for elm in santa_info])
-         
+        
     #결과출력
     for santa in santa_info:
         print(santa[0], end=" ")
