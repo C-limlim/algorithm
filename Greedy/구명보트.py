@@ -1,4 +1,5 @@
 #문제: 구명보트
+#link: https://school.programmers.co.kr/learn/courses/30/lessons/42885
 #최대 2명 탑승가능하고 무게제한이 있는 구명보트
 #모든사람을 구출하기 위해 필요한 구명보트 개수의 최소값
 #무인도 사람 1~50000, 몸무게 및 무게제한 범위 40kg~240kg
